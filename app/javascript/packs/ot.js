@@ -9,3 +9,13 @@ document.addEventListener('turbolinks:load', () => {
     contents = textarea.value;
   });
 });
+
+this.App = {};
+
+App.cable = ActionCable.createConsumer();
+
+App.posts = App.cable.subscriptions.create('PostsChannel', {
+  received: function(data) {
+    console.log(data);
+  }
+});
