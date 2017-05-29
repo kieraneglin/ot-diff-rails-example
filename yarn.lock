@@ -2861,6 +2861,10 @@ osenv@0, osenv@^0.1.4:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.0"
 
+ot-diff@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ot-diff/-/ot-diff-1.0.2.tgz#766eb8a308d9bef8da6ec3a234e38b9c4dbf1374"
+
 pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
