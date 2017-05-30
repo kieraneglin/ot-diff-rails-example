@@ -31,7 +31,7 @@ class DiffHelper {
       opts.textarea.selectionEnd = selectEnd;
     } else {
       this.buffer.shift();
-      
+
       if(this.buffer.length > 0) {
         this._sendTransform(postId, this.buffer);
       }
@@ -51,7 +51,7 @@ class DiffHelper {
     }
   }
   _sendTransform(post, buffer) {
-    let url = `http://localhost:3000/transforms/${post}`,
+    let url = `https://ot-diff.herokuapp.com/transforms/${post}`,
       body = { transform: JSON.stringify(buffer[0]) };
 
     unirest.patch(url).send(body).end();
