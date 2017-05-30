@@ -3,10 +3,10 @@ class TransformsController < ApplicationController
 
   def update
     transform = JSON.parse(params[:transform])
-    Post.last.update(body: transform['post'])
+    Post.find(params[:id]).update(body: transform['post'])
 
     ActionCable.server.broadcast('posts', transform: transform)
 
-    render json: Post.last
+    render json: transform
   end
 end

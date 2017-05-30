@@ -3,6 +3,8 @@ import unirest from 'unirest';
 
 class DiffHelper {
   connected(opts, App) {
+    this.buffer = [];
+    this.wow = 'test';
     opts.textarea = document.getElementById('post_body');
     opts.content = opts.textarea.value;
     opts.identifier = Math.random().toString();
@@ -15,6 +17,7 @@ class DiffHelper {
   }
   received(response, opts) {
     let transform = response.transform;
+    let postId = document.getElementById('post_id').value;
 
     if(transform.sender !== opts.identifier) {
       let updated = OtDiff.transform(opts.textarea.value, transform),
@@ -26,6 +29,12 @@ class DiffHelper {
 
       opts.textarea.selectionStart = selectStart;
       opts.textarea.selectionEnd = selectEnd;
+    } else {
+      this.buffer.shift();
+      
+      if(this.buffer.length > 0) {
+        this._sendTransform(postId, this.buffer);
+      }
     }
   }
   _applyDiff(opts) {
@@ -36,11 +45,14 @@ class DiffHelper {
     opts.transform.sender = opts.identifier;
     opts.transform.post = opts.content;
 
-    this._sendTransform(postId, opts.transform);
+    this.buffer.push(opts.transform);
+    if(this.buffer.length === 1) {
+      this._sendTransform(postId, this.buffer);
+    }
   }
-  _sendTransform(post, transform) {
+  _sendTransform(post, buffer) {
     let url = `http://localhost:3000/transforms/${post}`,
-      body = { transform: JSON.stringify(transform) };
+      body = { transform: JSON.stringify(buffer[0]) };
 
     unirest.patch(url).send(body).end();
   }
