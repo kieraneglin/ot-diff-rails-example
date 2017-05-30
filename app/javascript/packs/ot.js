@@ -1,40 +1,15 @@
 import OtDiff from 'ot-diff';
 import unirest from 'unirest';
 import App from './posts_cable';
+import DiffHelper from './diff_helper';
 
 let opts = {};
 App.posts = App.cable.subscriptions.create('PostsChannel', {
   connected: () => {
-    let postId = document.getElementById('post_id').value;
-
-    opts.textarea = document.getElementById('post_body');
-    opts.content = opts.textarea.value;
-    opts.identifier = Math.random().toString();
-
-    opts.textarea.addEventListener('input', () => {
-      opts.transform = OtDiff.diff(opts.content, opts.textarea.value);
-      opts.transform.sender = opts.identifier;
-
-      App.sendTransform(postId, opts.transform);
-      opts.content = opts.textarea.value;
-    });
+    DiffHelper.connected(opts, App);
   },
   received: (data) => {
-    let transform = JSON.parse(data.transform);
-
-    if(transform.sender !== opts.identifier) {
-      if(transform.action === 'insert') {
-        App.insertTransform(opts, transform);
-      } else if(transform.action === 'delete') {
-        App.deleteTransform(opts, transform);
-      } else if(transform.action === 'replace') {
-        App.replaceTransform(opts, transform);
-      } else if(transform.action === 'noop') {
-        return;
-      }
-    } else {
-      console.log('from me');
-    }
+    DiffHelper.received(data, opts, App);
   }
 });
 
