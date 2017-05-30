@@ -17,9 +17,9 @@ class DiffHelper {
     let transform = response.transform;
 
     if(transform.sender !== opts.identifier) {
-      let updated = OtDiff.transform(opts.textarea.value, transform);
-      let selectStart = opts.textarea.selectionStart;
-      let selectEnd = opts.textarea.selectionEnd;
+      let updated = OtDiff.transform(opts.textarea.value, transform),
+        selectStart = opts.textarea.selectionStart,
+        selectEnd = opts.textarea.selectionEnd;
 
       opts.content = updated;
       opts.textarea.value = updated;
@@ -39,8 +39,8 @@ class DiffHelper {
     this._sendTransform(postId, opts.transform);
   }
   _sendTransform(post, transform) {
-    let url = `http://localhost:3000/transforms/${post}`;
-    let body = { transform: JSON.stringify(transform) };
+    let url = `http://localhost:3000/transforms/${post}`,
+      body = { transform: JSON.stringify(transform) };
 
     unirest.patch(url).send(body).end();
   }
