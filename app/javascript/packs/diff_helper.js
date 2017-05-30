@@ -18,9 +18,14 @@ class DiffHelper {
 
     if(transform.sender !== opts.identifier) {
       let updated = OtDiff.transform(opts.textarea.value, transform);
+      let selectStart = opts.textarea.selectionStart;
+      let selectEnd = opts.textarea.selectionEnd;
 
       opts.content = updated;
       opts.textarea.value = updated;
+
+      opts.textarea.selectionStart = selectStart;
+      opts.textarea.selectionEnd = selectEnd;
     }
   }
   _applyDiff(opts) {
