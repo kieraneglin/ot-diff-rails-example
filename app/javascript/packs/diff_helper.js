@@ -14,7 +14,7 @@ class DiffHelper {
     return opts;
   }
   received(response, opts) {
-    let transform = JSON.parse(response.transform);
+    let transform = response.transform;
 
     if(transform.sender !== opts.identifier) {
       let updated = OtDiff.transform(opts.textarea.value, transform);
@@ -27,10 +27,11 @@ class DiffHelper {
     let postId = document.getElementById('post_id').value;
 
     opts.transform = OtDiff.diff(opts.content, opts.textarea.value);
+    opts.content = opts.textarea.value;
     opts.transform.sender = opts.identifier;
+    opts.transform.post = opts.content;
 
     this._sendTransform(postId, opts.transform);
-    opts.content = opts.textarea.value;
   }
   _sendTransform(post, transform) {
     let url = `http://localhost:3000/transforms/${post}`;
