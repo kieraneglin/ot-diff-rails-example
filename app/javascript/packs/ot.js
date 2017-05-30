@@ -8,10 +8,8 @@ let opts = {};
 App.posts = App.cable.subscriptions.create('PostsChannel', {
   connected: () => {
     DiffHelper.connected(opts, App);
-    console.log(DiffHelper);
   },
   received: (data) => {
     DiffHelper.received(data, opts);
-    console.log(DiffHelper);
   }
 });
