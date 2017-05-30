@@ -25,6 +25,12 @@ module.exports = {
     }, {}
   ),
 
+  node: {
+    fs: "empty",
+    net: "empty",
+    tls: "empty",
+  },
+
   output: {
     filename: '[name].js',
     path: output.path,

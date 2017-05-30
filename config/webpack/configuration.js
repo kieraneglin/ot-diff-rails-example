@@ -27,6 +27,7 @@ const output = {
   publicPath: formatPublicPath(env.ASSET_HOST, settings.public_output_path)
 }
 
+
 module.exports = {
   settings,
   env,
