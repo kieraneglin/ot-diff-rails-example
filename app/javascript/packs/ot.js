@@ -6,12 +6,14 @@ document.addEventListener('turbolinks:load', () => {
   let textarea = document.getElementById('post_body');
   let postId = document.getElementById('post_id').value;
 
-  let contents = textarea.value;
+  window.consumerId = Math.random().toString();
+  window.contents = textarea.value;
 
-  textarea.addEventListener('input', () => {
-    let transform = OtDiff.diff(contents, textarea.value);
+  textarea.addEventListener('input', (e) => {
+    let transform = OtDiff.diff(window.contents, textarea.value);
+    transform.sender = window.consumerId;
 
     PostsCable.sendTransform(postId, transform);
-    contents = textarea.value;
+    window.contents = textarea.value;
   });
 });
