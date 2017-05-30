@@ -1,6 +1,7 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-
+  config.web_socket_server_url = "wss://ot-diff.herokuapp.com/cable"
+  config.action_cable.allowed_request_origins = ['https://ot-diff.herokuapp.com', 'http://ot-diff.herokuapp.com']
   # Code is not reloaded between requests.
   config.cache_classes = true
 

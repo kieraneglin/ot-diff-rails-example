@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: redis://localhost:6379/1
+  url: redis://redistogo:8590c3d128bd2894f7398242a227369e@greeneye.redistogo.com:11357/
   channel_prefix: ot-example_production
