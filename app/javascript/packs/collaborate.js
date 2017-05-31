@@ -13,8 +13,11 @@ App.posts = App.cable.subscriptions.create(channel, {
   received(data) {
     if (data.action === 'connected') {
       transformer.setup(App, data);
-      return;
+      this.perform('update');
+    } else if(data.action === 'update') {
+      transformer.update(data);
+    } else {
+      transformer.apply(data);
     }
-    transformer.apply(data);
   }
 });

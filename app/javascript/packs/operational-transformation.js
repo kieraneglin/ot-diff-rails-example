@@ -9,7 +9,6 @@ class OperationalTransformation {
   setup(App, data) {
     this.clientId = data.client_id;
     this.postId = JSON.parse(App.posts.identifier).post_id;
-
     this._setupEventListeners(() => {
       this._createDiff();
       if(this.buffer.length === 1) {
@@ -25,10 +24,16 @@ class OperationalTransformation {
 
   apply(data) {
     if(data.transform.sender !== this.clientId) {
-      this.content = OtDiff.transform(this.textarea.value, data.transform);
-      this._insertDiff(() => {
-        this.textarea.value = this.content;
-      });
+      if(this.buffer.length === 0) {
+        this._insertDiff(() => {
+          this.textarea.value = data.post;
+        });
+      } else {
+        this.content = OtDiff.transform(this.textarea.value, data.transform);
+        this._insertDiff(() => {
+          this.textarea.value = this.content;
+        });
+      }
     } else {
       this.buffer.shift();
       if(this.buffer.length > 0) {
@@ -37,6 +42,10 @@ class OperationalTransformation {
         this.content = this.textarea.value;
       }
     }
+  }
+
+  update(data) {
+    this.textarea.value = data.post;
   }
 
   _setupEventListeners(callback) {
