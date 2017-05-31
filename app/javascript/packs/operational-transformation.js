@@ -12,12 +12,14 @@ class OperationalTransformation {
 
     this._setupEventListeners(() => {
       this._createDiff();
-      if(this.buffer.length === 1) {
+
+      // if(this.buffer.length === 1) {
         this.content = this.textarea.value;
         this._sendDiff();
-      } else {
-        this._mergeDiff();
-      }
+
+      // } else {
+        // this._mergeDiff();
+      // }
     });
   }
 
@@ -28,7 +30,6 @@ class OperationalTransformation {
         this.textarea.value = this.content;
       });
     } else {
-      this.buffer.shift();
       if(this.buffer.length > 0) {
         this._sendDiff();
       }
@@ -67,18 +68,19 @@ class OperationalTransformation {
   }
 
   // If there's a diff in the buffer, merge any new diffs into it
-  _mergeDiff() {
-    this.buffer = [];
-    this.buffer.push({
-      transform: this.transform,
-      post: this.textarea.value
-    });
-  }
+  // _mergeDiff() {
+  //   this.buffer.splice(1, this.buffer.length);
+  //   this.buffer.push({
+  //     transform: this.transform,
+  //     post: this.textarea.value
+  //   });
+  // }
 
   _sendDiff() {
-    console.log(JSON.stringify(this.buffer));
     let base = `${window.location.protocol}//${window.location.host}`;
     request.patch(`${base}/transforms/${this.postId}`, { form: this.buffer[0] });
+
+    this.buffer.shift();
   }
 }
 
