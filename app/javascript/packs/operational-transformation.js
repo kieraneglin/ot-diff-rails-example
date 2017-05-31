@@ -1,5 +1,6 @@
 import request from 'request';
 import OtDiff from 'ot-diff';
+import Cursor from './cursor';
 
 class OperationalTransformation {
   constructor() {
@@ -15,25 +16,15 @@ class OperationalTransformation {
         this.content = this.textarea.value;
         this._sendDiff();
       }
-      // else {
-      //   console.log('merge');
-      //   this._mergeDiff();
-      // }
     });
   }
 
   apply(data) {
     if(data.transform.sender !== this.clientId) {
-      if(this.buffer.length === 0) {
-        this._insertDiff(() => {
-          this.textarea.value = data.post;
-        });
-      } else {
         this.content = OtDiff.transform(this.textarea.value, data.transform);
-        this._insertDiff(() => {
+        this._insertDiff(data.transform, () => {
           this.textarea.value = this.content;
         });
-      }
     } else {
       this.buffer.shift();
       if(this.buffer.length > 0) {
@@ -76,25 +67,13 @@ class OperationalTransformation {
     });
   }
 
-  _insertDiff(callback) {
-    let cursorStart = this.textarea.selectionStart,
-      cursorEnd = this.textarea.selectionEnd;
+  _insertDiff(data, callback) {
+    Cursor.preserve(this.textarea);
 
     callback();
 
-    this.textarea.selectionStart = cursorStart;
-    this.textarea.selectionEnd = cursorEnd;
+    Cursor.restore(data);
   }
-
-  // If there's a diff in the buffer, merge any new diffs into it
-  // _mergeDiff() {
-  //   this.buffer.splice(1, this.buffer.length);
-  //   this.buffer.push({
-  //     transform: this.transform,
-  //     post: this.textarea.value
-  //   });
-  //   console.log(JSON.stringify(this.buffer));
-  // }
 
   _sendDiff() {
     let base = `${window.location.protocol}//${window.location.host}`;
