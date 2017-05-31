@@ -12,13 +12,13 @@ class OperationalTransformation {
 
     this._setupEventListeners(() => {
       this._createDiff();
-
-      // if(this.buffer.length === 1) {
+      if(this.buffer.length === 1) {
         this.content = this.textarea.value;
         this._sendDiff();
-
-      // } else {
-        // this._mergeDiff();
+      }
+      // else {
+      //   console.log('merge');
+      //   this._mergeDiff();
       // }
     });
   }
@@ -30,6 +30,7 @@ class OperationalTransformation {
         this.textarea.value = this.content;
       });
     } else {
+      this.buffer.shift();
       if(this.buffer.length > 0) {
         this._sendDiff();
       }
@@ -46,9 +47,17 @@ class OperationalTransformation {
   }
 
   _createDiff() {
-    let transform = OtDiff.diff(this.content, this.textarea.value);
+    let transform;
+
+    if(this.buffer.length > 0) {
+      transform = OtDiff.diff(this.buffer[this.buffer.length - 1].post, this.textarea.value);
+    } else {
+      transform = OtDiff.diff(this.content, this.textarea.value);
+    }
+
     this.transform = Object.assign(transform, {
-      sender: this.clientId
+      sender: this.clientId,
+      id: Math.random().toString()
     });
 
     this.buffer.push({
@@ -74,13 +83,15 @@ class OperationalTransformation {
   //     transform: this.transform,
   //     post: this.textarea.value
   //   });
+  //   console.log(JSON.stringify(this.buffer));
   // }
 
   _sendDiff() {
     let base = `${window.location.protocol}//${window.location.host}`;
     request.patch(`${base}/transforms/${this.postId}`, { form: this.buffer[0] });
-
-    this.buffer.shift();
+  }
+  pp(obj) {
+    console.log(JSON.stringify(obj, null, 2));
   }
 }
 
