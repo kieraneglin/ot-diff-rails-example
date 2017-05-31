@@ -4,15 +4,23 @@ import OtDiff from 'ot-diff';
 class OperationalTransformation {
   constructor() {
     this.buffer = [];
-    this.setupComplete = false;
   }
 
-  setup(App) {
+  setup(App, data) {
+    this.clientId = data.client_id;
     this.postId = JSON.parse(App.posts.identifier).post_id;
     this._setupEventListeners(() => {
       this._createDiff();
       this._sendDiff();
     });
+  }
+
+  apply(data){
+    if(data.transform.sender !== this.clientId) {
+      let transformed = OtDiff.transform(this.textarea.value, data.transform);
+      this.content = transformed;
+      this.textarea.value = transformed;
+    }
   }
 
   _setupEventListeners(callback) {

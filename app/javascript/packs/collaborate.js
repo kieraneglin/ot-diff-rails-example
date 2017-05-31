@@ -12,16 +12,11 @@ let channel = {
 };
 
 App.posts = App.cable.subscriptions.create(channel, {
-  connected() {
-    console.log('connected');
-  },
   received(data) {
     if (data.action === 'connected') {
-      transformer.clientId = data.client_id;
-      transformer.setup(App);
-
+      transformer.setup(App, data);
       return;
     }
-    console.log(data);
+    transformer.apply(data);
   }
 });
