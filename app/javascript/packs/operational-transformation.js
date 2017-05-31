@@ -9,7 +9,7 @@ class OperationalTransformation {
   setup(App, data) {
     this.clientId = data.client_id;
     this.postId = JSON.parse(App.posts.identifier).post_id;
-    
+
     this._setupEventListeners(() => {
       this._createDiff();
       if(this.buffer.length === 1) {
@@ -24,7 +24,9 @@ class OperationalTransformation {
   apply(data){
     if(data.transform.sender !== this.clientId) {
       this.content = OtDiff.transform(this.textarea.value, data.transform);
-      this.textarea.value = this.content;
+      this._insertDiff(() => {
+        this.textarea.value = this.content;
+      });
     } else {
       this.buffer.shift();
       if(this.buffer.length > 0) {
@@ -52,6 +54,16 @@ class OperationalTransformation {
       transform: this.transform,
       post: this.textarea.value
     });
+  }
+
+  _insertDiff(callback) {
+    let cursorStart = this.textarea.selectionStart,
+      cursorEnd = this.textarea.selectionEnd;
+
+    callback();
+
+    this.textarea.selectionStart = cursorStart;
+    this.textarea.selectionEnd = cursorEnd;
   }
 
   // If there's a diff in the buffer, merge any new diffs into it
