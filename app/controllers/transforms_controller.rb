@@ -6,6 +6,6 @@ class TransformsController < ApplicationController
 
     ActionCable.server.broadcast("posts-#{params[:id]}", transform: params[:transform])
 
-    render json: params[:transform]
+    render json: {}
   end
 end

@@ -21,7 +21,7 @@ class OperationalTransformation {
     });
   }
 
-  apply(data){
+  apply(data) {
     if(data.transform.sender !== this.clientId) {
       this.content = OtDiff.transform(this.textarea.value, data.transform);
       this._insertDiff(() => {
