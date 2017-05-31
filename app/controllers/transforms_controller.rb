@@ -2,11 +2,10 @@ class TransformsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def update
-    transform = JSON.parse(params[:transform])
-    Post.find(params[:id]).update(body: transform['post'])
+    Post.find(params[:id]).update(body: params[:post])
 
-    ActionCable.server.broadcast('posts', transform: transform)
+    ActionCable.server.broadcast("posts-#{params[:id]}", transform: params[:transform])
 
-    render json: transform
+    render json: params[:transform]
   end
 end

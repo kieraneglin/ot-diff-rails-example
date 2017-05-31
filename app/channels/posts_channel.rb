@@ -1,6 +1,12 @@
 class PostsChannel < ApplicationCable::Channel
+  on_subscribe :connect
+
+  def connect
+    transmit action: 'connected', client_id: SecureRandom.uuid
+  end
+
   def subscribed
-    stream_from 'posts'
+    stream_from "posts-#{params[:post_id]}"
   end
 
   def unsubscribed

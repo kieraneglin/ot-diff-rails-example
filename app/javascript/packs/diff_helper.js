@@ -51,7 +51,7 @@ class DiffHelper {
     }
   }
   _sendTransform(post, buffer) {
-    let url = `https://ot-diff.herokuapp.com/transforms/${post}`,
+    let url = `http://localhost:3000/transforms/${post}`,
       body = { transform: JSON.stringify(buffer[0]) };
 
     unirest.patch(url).send(body).end();
