@@ -22,7 +22,6 @@ class OperationalTransformation {
   }
 
   apply(data) {
-    console.log(data);
     if(data.transform.sender !== this.clientId) {
       this.content = OtDiff.transform(this.textarea.value, data.transform);
       this._insertDiff(() => {
@@ -77,6 +76,7 @@ class OperationalTransformation {
   }
 
   _sendDiff() {
+    console.log(JSON.stringify(this.buffer));
     let base = `${window.location.protocol}//${window.location.host}`;
     request.patch(`${base}/transforms/${this.postId}`, { form: this.buffer[0] });
   }
