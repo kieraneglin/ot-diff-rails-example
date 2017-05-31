@@ -9,17 +9,27 @@ class OperationalTransformation {
   setup(App, data) {
     this.clientId = data.client_id;
     this.postId = JSON.parse(App.posts.identifier).post_id;
+    
     this._setupEventListeners(() => {
       this._createDiff();
-      this._sendDiff();
+      if(this.buffer.length === 1) {
+        this.content = this.textarea.value;
+        this._sendDiff();
+      } else {
+        this._mergeDiff();
+      }
     });
   }
 
   apply(data){
     if(data.transform.sender !== this.clientId) {
-      let transformed = OtDiff.transform(this.textarea.value, data.transform);
-      this.content = transformed;
-      this.textarea.value = transformed;
+      this.content = OtDiff.transform(this.textarea.value, data.transform);
+      this.textarea.value = this.content;
+    } else {
+      this.buffer.shift();
+      if(this.buffer.length > 0) {
+        this._sendDiff();
+      }
     }
   }
 
@@ -27,7 +37,7 @@ class OperationalTransformation {
     this.textarea = document.getElementById('post_body');
     this.content = this.textarea.value;
 
-    this.textarea.addEventListener('input', () => {
+    this.textarea.addEventListener('input', (e) => {
       callback();
     });
   }
@@ -37,16 +47,25 @@ class OperationalTransformation {
     this.transform = Object.assign(transform, {
       sender: this.clientId
     });
-    this.content = this.textarea.value;
+
+    this.buffer.push({
+      transform: this.transform,
+      post: this.textarea.value
+    });
+  }
+
+  // If there's a diff in the buffer, merge any new diffs into it
+  _mergeDiff() {
+    this.buffer = [];
+    this.buffer.push({
+      transform: this.transform,
+      post: this.textarea.value
+    });
   }
 
   _sendDiff() {
-    request.patch(`http://localhost:3000/transforms/${this.postId}`, {
-      form: {
-        transform: this.transform,
-        post: this.content
-      }
-    });
+    let base = `${window.location.protocol}//${window.location.host}`;
+    request.patch(`${base}/transforms/${this.postId}`, { form: this.buffer[0] });
   }
 }
 
