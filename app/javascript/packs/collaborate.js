@@ -15,6 +15,8 @@ App.posts = App.cable.subscriptions.create(channel, {
       transformer.setup(App, data);
       this.perform('update');
     } else if(data.action === 'update') {
+      // If the document changes between pageload and ActionCable ready
+      // This ensures a synced initial state
       transformer.update(data);
     } else {
       transformer.apply(data);

@@ -21,10 +21,10 @@ class OperationalTransformation {
 
   apply(data) {
     if(data.transform.sender !== this.clientId) {
-        this.content = OtDiff.transform(this.textarea.value, data.transform);
-        this._insertDiff(data.transform, () => {
-          this.textarea.value = this.content;
-        });
+      this.content = OtDiff.transform(this.textarea.value, data.transform);
+      Cursor.preserve(this.textarea);
+      this.textarea.value = this.content;
+      Cursor.restore(data.transform);
     } else {
       this.buffer.shift();
       if(this.buffer.length > 0) {
@@ -56,31 +56,18 @@ class OperationalTransformation {
       transform = OtDiff.diff(this.content, this.textarea.value);
     }
 
-    this.transform = Object.assign(transform, {
-      sender: this.clientId,
-      id: Math.random().toString()
-    });
-
     this.buffer.push({
-      transform: this.transform,
+      transform: Object.assign(transform, {
+        sender: this.clientId
+      }),
       post: this.textarea.value
     });
   }
 
-  _insertDiff(data, callback) {
-    Cursor.preserve(this.textarea);
-
-    callback();
-
-    Cursor.restore(data);
-  }
-
   _sendDiff() {
-    let base = `${window.location.protocol}//${window.location.host}`;
-    request.patch(`${base}/transforms/${this.postId}`, { form: this.buffer[0] });
-  }
-  pp(obj) {
-    console.log(JSON.stringify(obj, null, 2));
+    request.patch(`${window.location.protocol}//${window.location.host}/transforms/${this.postId}`, {
+      form: this.buffer[0]
+    });
   }
 }
 

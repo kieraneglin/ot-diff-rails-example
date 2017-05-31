@@ -12,8 +12,4 @@ class PostsChannel < ApplicationCable::Channel
   def update
     transmit action: 'update', post: Post.find(params[:post_id]).body
   end
-
-  def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
-  end
 end
