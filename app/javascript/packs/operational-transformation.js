@@ -33,6 +33,8 @@ class OperationalTransformation {
       this.buffer.shift();
       if(this.buffer.length > 0) {
         this._sendDiff();
+      } else {
+        this.content = this.textarea.value;
       }
     }
   }
@@ -48,7 +50,6 @@ class OperationalTransformation {
 
   _createDiff() {
     let transform;
-
     if(this.buffer.length > 0) {
       transform = OtDiff.diff(this.buffer[this.buffer.length - 1].post, this.textarea.value);
     } else {
