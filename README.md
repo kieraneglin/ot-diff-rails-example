@@ -1,24 +1,7 @@
-# README
+# OT-Diff example
+A Rails app showing off my [OT-Diff](https://github.com/kieraneglin/ot-diff) library.  Check it out here! https://ot-diff.herokuapp.com/posts/1/edit
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Open this link in two tabs (or with a friend) and test out the live editing.  
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Note:
+Text isn't saved, since this is public and unsecured.  So if you want to get the full experience make sure you and your friend start with a blank textarea. 
